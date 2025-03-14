@@ -9,12 +9,15 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository
-public interface AccountRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
 
-    public Account getAccount(Account account);
+@Repository
+public interface AccountRepository extends JpaRepository<Account, Integer>
+{
+
+    public Account findByUsername(String username);
     public Account insertAccount(Account account);
-    public Account loginAccount(Account account);
+    public Account getAccountByUsernameAndPassword(String username, String password);
 
 
 }

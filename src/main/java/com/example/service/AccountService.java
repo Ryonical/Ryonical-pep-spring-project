@@ -6,31 +6,31 @@ import org.springframework.stereotype.Service;
 import com.example.entity.Account;
 import com.example.repository.AccountRepository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
 @Service
-public class AccountService implements AccountRepository
+public class AccountService
 {
+    @Autowired
     private AccountRepository accountRepository;
 
-    public AccountService(AccountRepository accountRepository2){
-        accountRepository = accountRepository2;
-    }
 
-
-    @Autowired
-    public Account getAccount(Account account)
+    public Account findByUsername(String username)
     {
-
+        return accountRepository.findByUsername(username);
     }
     
-    @Autowired
     public Account insertAccount(Account account)
     {
-
+        if(account.getUsername() != "" && account.getPassword().length() >= 4 && accountRepository.findByUsername(account.getUsername()) == null)
+        {
+            return accountRepository.insertAccount(account);
+        }
+        return null;
     }
 
-    @Autowired
-    public Account loginAccount(Account account)
+    public Account loginAccount(String username, String password)
     {
-
+        return accountRepository.getAccountByUsernameAndPassword(username, password);
     }
 }

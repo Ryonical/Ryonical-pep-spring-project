@@ -6,6 +6,7 @@ import com.example.entity.Message;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 @Repository
 public interface MessageRepository {

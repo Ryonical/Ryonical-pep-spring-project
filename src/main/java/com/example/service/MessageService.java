@@ -7,9 +7,12 @@ import org.springframework.stereotype.Service;
 
 import com.example.entity.Message;
 
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
 @Service
 public class MessageService {
-
+    /*
     @Autowired
     public List<Message> getAllMessages()
     {
@@ -45,5 +48,6 @@ public class MessageService {
     {
         
     }
+    */
 
 }

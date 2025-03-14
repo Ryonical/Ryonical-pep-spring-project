@@ -2,13 +2,16 @@ package com.example.controller;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.example.entity.Account;
 import com.example.service.AccountService;
-import com.example.service.MessageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -23,71 +26,46 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  @ComponentScan(basePackages = "com.example")
 public class SocialMediaController {
     AccountService accountService;
-    MessageService messageService;
+    //MessageService messageService;
 
     public SocialMediaController(){
         this.accountService = new AccountService();
-        this.messageService = new MessageService();
+        //this.messageService = new MessageService();
     }
 
-    /**
-     * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
-     * suite must receive a Javalin object from this method.
-     * @return a Javalin app object which defines the behavior of the Javalin controller.
-     */
-    /*
-    public Javalin startAPI() {
-        Javalin app = Javalin.create();
-        app.post("/register", this::newUserHandler);
-        app.post("/login", this::loginHandler);
-        app.post("/messages", this::createMessageHandler);
-        app.get("/messages", this::getAllMessageHandler);
-        app.get("/messages/{message_id}", this::getMessageIdHandler);
-        app.delete("/messages/{message_id}", this::deleteMessageIdHandler);
-        app.patch("/messages/{message_id}", this::patchMessageIdHandler);
-        app.get("/accounts/{account_id}/messages", this::getAccountMessageHandler);
-
-        return app;
-    }
-    */
-
-    /**
-     * This is an example handler for an example endpoint.
-     * @param context The Javalin Context object manages information about both the HTTP request and response.
-     
-    private void exampleHandler(Context context) {
-        context.json("sample text");
-    }
-    */
 
     @RequestMapping("/regester")
-    private void newUserHandler(Context ctx) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        Account account = mapper.readValue(ctx.body(), Account.class);
+    public ResponseEntity<?> createUser(@RequestBody Account account)
+    {
+        if(accountService.findByUsername(account.getUsername()) != null)
+        {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
         Account addedAccount = accountService.insertAccount(account);
-        if(addedAccount != null){
-            ctx.json(mapper.writeValueAsString(addedAccount));
-        }else{
-            ctx.status(400);
+        if(addedAccount != null)
+        {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        else
+        {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    @RequestMapping("/login")
-    private void loginHandler(Context ctx) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        Account account = mapper.readValue(ctx.body(), Account.class);
-        Account loginAccount = accountService.login(account);
+    @PostMapping("/login")
+    public ResponseEntity<?> loginHandler(@RequestBody Account account)
+    {
+        Account loginAccount = accountService.loginAccount(account.getUsername(), account.getPassword());
         if(loginAccount != null){
-            ctx.status(200).json(mapper.writeValueAsString(loginAccount));
+            return new ResponseEntity<>(HttpStatus.OK);
         }else{
-            ctx.status(401);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
-
+    /*
     @RequestMapping(value = "/messages", method = RequestMethod.POST)
-    private void createMessageHandler(Context ctx) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        Message message = mapper.readValue(ctx.body(), Message.class);
+    public ResponseEntity<?> createMessageHandler(@RequestBody Message message) 
+    {
         Message addedMessage = messageService.addMessage(message);
         if(addedMessage != null){
             ctx.status(200).json(mapper.writeValueAsString(addedMessage));
@@ -152,5 +130,6 @@ public class SocialMediaController {
             ctx.status(200);
         }
     }
+        */
 
 }
