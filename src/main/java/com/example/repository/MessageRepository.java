@@ -11,12 +11,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 @Repository
 public interface MessageRepository {
 
-    public List<Message> getAllMessages();
-    public Message getMessageById(int id);
-    public Message insertMessage(Message message);
-    public Message deleteMessageById(int id);
+    public List<Message> findAllMessages();
+    public Message findMessageById(int id);
+    public Message deleteById(int id);
     public Message UpdateMessage(int id, Message newText);
-    public List<Message> getAllMessagesFromUser(int userId);
+    public List<Message> findAllMessagesByUser(int userId);
 
 
 }

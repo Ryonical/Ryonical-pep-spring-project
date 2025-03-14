@@ -13,40 +13,40 @@ import org.springframework.data.jpa.repository.JpaRepository;
 @Service
 public class MessageService {
     /*
-    @Autowired
-    public List<Message> getAllMessages()
-    {
+    @AutoWired
+    private MessageRepository messageRepositiory;
 
+    public List<Message> findAllMessages()
+    {
+        return messageRepository.findAllMessages();
     }
 
-    @Autowired
-    public Message getMessageById(int id)
+    public Message findMessageById(int id)
     {
-
+        return messageRepository.findMessageById(id);
     }
 
-    @Autowired
     public Message insertMessage(Message message)
     {
+        return messageRepository.save(message);
 
     }
 
-    @Autowired
     public Message deleteMessageById(int id)
     {
-
+        return messageRepository.deleteById(id);
     }
 
-    @Autowired
     public Message UpdateMessage(int id, Message newText)
     {
-
+        Message message = messageRepository.findMessageById(id);
+        message.setMessageText(newText.getMessageText());
+        return message;
     }
 
-    @Autowired
-    public List<Message> getAllMessagesFromUser(int userId)
+    public List<Message> findAllMessagesByUser(int userId)
     {
-        
+        return messageRepository.findAllMessagesByUser(userId);
     }
     */
 

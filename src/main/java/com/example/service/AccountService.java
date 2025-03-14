@@ -24,13 +24,13 @@ public class AccountService
     {
         if(account.getUsername() != "" && account.getPassword().length() >= 4 && accountRepository.findByUsername(account.getUsername()) == null)
         {
-            return accountRepository.insertAccount(account);
+            return accountRepository.save(account);
         }
         return null;
     }
 
     public Account loginAccount(String username, String password)
     {
-        return accountRepository.getAccountByUsernameAndPassword(username, password);
+        return accountRepository.findByUsernameAndPassword(username, password);
     }
 }

@@ -34,7 +34,7 @@ public class SocialMediaController {
     }
 
 
-    @RequestMapping("/regester")
+    @PostMapping("/regester")
     public ResponseEntity<?> createUser(@RequestBody Account account)
     {
         if(accountService.findByUsername(account.getUsername()) != null)
@@ -63,7 +63,7 @@ public class SocialMediaController {
         }
     }
     /*
-    @RequestMapping(value = "/messages", method = RequestMethod.POST)
+    @PostMapping("/messages")
     public ResponseEntity<?> createMessageHandler(@RequestBody Message message) 
     {
         Message addedMessage = messageService.addMessage(message);
@@ -75,7 +75,7 @@ public class SocialMediaController {
     }
 
     
-    @RequestMapping(value = "/messages", method = RequestMethod.GET)
+    @GetMapping("/messages")
     private void getAllMessageHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         List<Message> allMessage = messageService.getAllMessages();
@@ -86,7 +86,7 @@ public class SocialMediaController {
         }
     }
 
-    @RequestMapping(value = "/messages/{message_id}", method = RequestMethod.GET)
+    @GetMapping("/messages/{message_id}")
     private void getMessageIdHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Message retrivedMessage = messageService.getMessageById(Integer.parseInt(ctx.pathParam("message_id")));
@@ -97,7 +97,7 @@ public class SocialMediaController {
         }
     }
 
-    @RequestMapping(value = "/messages/{message_id}", method = RequestMethod.DELETE)
+    @DeleteMapping("/messages/{message_id}")
     private void deleteMessageIdHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Message deletedMessage = messageService.deleteMessageById(Integer.parseInt(ctx.pathParam("message_id")));
@@ -108,7 +108,7 @@ public class SocialMediaController {
         }
     }
 
-    @RequestMapping(value = "/messages/{message_id}", method = RequestMethod.PATCH)
+    @PatchMapping("/messages/{message_id}")
     private void patchMessageIdHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Message message = mapper.readValue(ctx.body(), Message.class);
@@ -120,7 +120,7 @@ public class SocialMediaController {
         }
     }
 
-    @RequestMapping(value = "/messages/{message_id}/messages", method = RequestMethod.GET)
+    @GetMapping("/messages/{message_id}/messages")
     private void getAccountMessageHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         List<Message> allMessage = messageService.getAllMessagesFromUser(Integer.parseInt(ctx.pathParam("account_id")));
