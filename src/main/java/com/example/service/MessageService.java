@@ -15,8 +15,8 @@ import com.example.repository.AccountRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 @Service
-public class MessageService {
-    /*
+public class MessageService 
+{
     @Autowired
     private MessageRepository messageRepository;
     @Autowired
@@ -24,19 +24,19 @@ public class MessageService {
 
     public List<Message> findAllMessages()
     {
-        return messageRepository.findAllMessages();
+        return messageRepository.findAll();
     }
 
     public Message findMessageById(int id)
     {
-        return messageRepository.findMessageById(id);
+        return messageRepository.findById(id);
     }
 
     public Message insertMessage(Message message)
     {
         if(message.getMessageText().length() <= 255 && accountRepository.findById(message.getPostedBy()) != null)
         {
-            //return messageRepository.save(message);
+            return messageRepository.save(message);
         }
         return null;
     }
@@ -48,7 +48,7 @@ public class MessageService {
 
     public Message UpdateMessage(int id, Message newText)
     {
-        Message message = messageRepository.findMessageById(id);
+        Message message = messageRepository.findById(id);
         message.setMessageText(newText.getMessageText());
         return message;
     }
@@ -57,6 +57,6 @@ public class MessageService {
     {
         return messageRepository.findByPostedBy(userId);
     }
-    */
+    
 
 }

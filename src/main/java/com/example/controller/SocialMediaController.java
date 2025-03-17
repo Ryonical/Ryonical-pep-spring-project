@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.example.entity.Account;
 //import com.example.entity.Message;
 import com.example.service.AccountService;
+import com.example.service.MessageService;
 //import com.example.service.MessageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,12 +32,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class SocialMediaController {
     
     AccountService accountService;
-    //MessageService messageService;
+    MessageService messageService;
 
     @Autowired
-    public SocialMediaController(AccountService accountService){
+    public SocialMediaController(AccountService accountService, MessageService messageService){
         this.accountService = accountService;
-        //this.messageService = new MessageService();
+        this.messageService = messageService;
     }
 
 
@@ -63,12 +64,12 @@ public class SocialMediaController {
     {
         Account loginAccount = accountService.loginAccount(account.getUsername(), account.getPassword());
         if(loginAccount != null){
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<Account>(loginAccount, HttpStatus.OK);
         }else{
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
-    /*
+    
     @PostMapping("/messages")
     public ResponseEntity<?> createMessageHandler(@RequestBody Message message) 
     {
@@ -140,5 +141,5 @@ public class SocialMediaController {
         }
     }
     
-    */
+    
 }

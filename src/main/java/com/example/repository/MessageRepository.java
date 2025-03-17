@@ -2,6 +2,7 @@ package com.example.repository;
 
 import java.util.Optional;
 
+import com.example.entity.Account;
 import com.example.entity.Message;
 
 import java.util.List;
@@ -15,10 +16,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 @Repository
-public interface MessageRepository {
+public interface MessageRepository extends JpaRepository<Message, Integer>
+{
 
-    public List<Message> findAllMessages();
-    public Message findMessageById(int id);
+    public List<Message> findAll();
+    public Message findById(int id);
     public Message deleteById(int id);
     @Modifying
     @Transactional
