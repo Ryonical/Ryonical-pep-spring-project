@@ -6,6 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.entity.Message;
+import com.example.repository.MessageRepository;
+
+
+import com.example.repository.AccountRepository;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,8 +17,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 @Service
 public class MessageService {
     /*
-    @AutoWired
-    private MessageRepository messageRepositiory;
+    @Autowired
+    private MessageRepository messageRepository;
+    @Autowired
+    private AccountRepository accountRepository;
 
     public List<Message> findAllMessages()
     {
@@ -28,8 +34,11 @@ public class MessageService {
 
     public Message insertMessage(Message message)
     {
-        return messageRepository.save(message);
-
+        if(message.getMessageText().length() <= 255 && accountRepository.findById(message.getPostedBy()) != null)
+        {
+            //return messageRepository.save(message);
+        }
+        return null;
     }
 
     public Message deleteMessageById(int id)
@@ -46,7 +55,7 @@ public class MessageService {
 
     public List<Message> findAllMessagesByUser(int userId)
     {
-        return messageRepository.findAllMessagesByUser(userId);
+        return messageRepository.findByPostedBy(userId);
     }
     */
 

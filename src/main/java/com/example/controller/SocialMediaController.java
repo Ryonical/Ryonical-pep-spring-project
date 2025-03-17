@@ -1,17 +1,21 @@
 package com.example.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.example.entity.Account;
+//import com.example.entity.Message;
 import com.example.service.AccountService;
+//import com.example.service.MessageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -25,16 +29,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  @Controller
  @ComponentScan(basePackages = "com.example")
 public class SocialMediaController {
+    
     AccountService accountService;
     //MessageService messageService;
 
-    public SocialMediaController(){
-        this.accountService = new AccountService();
+    @Autowired
+    public SocialMediaController(AccountService accountService){
+        this.accountService = accountService;
         //this.messageService = new MessageService();
     }
 
 
-    @PostMapping("/regester")
+    @PostMapping("/register")
     public ResponseEntity<?> createUser(@RequestBody Account account)
     {
         if(accountService.findByUsername(account.getUsername()) != null)
@@ -66,34 +72,37 @@ public class SocialMediaController {
     @PostMapping("/messages")
     public ResponseEntity<?> createMessageHandler(@RequestBody Message message) 
     {
-        Message addedMessage = messageService.addMessage(message);
+        Message addedMessage = messageService.insertMessage(message);
         if(addedMessage != null){
-            ctx.status(200).json(mapper.writeValueAsString(addedMessage));
+            return new ResponseEntity<>(HttpStatus.OK);
         }else{
-            ctx.status(400);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     
     @GetMapping("/messages")
-    private void getAllMessageHandler(Context ctx) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        List<Message> allMessage = messageService.getAllMessages();
-        if(allMessage != null){
-            ctx.json(mapper.writeValueAsString(allMessage));
-        }else{
-            ctx.status(400);
+    private ResponseEntity<?> getAllMessageHandler()
+    {
+        ResponseEntity<List<Message>> allMessage = new ResponseEntity<>(messageService.findAllMessages(), HttpStatus.OK);
+        if(allMessage != null)
+        {
+            return allMessage;
+        }
+        else
+        {
+            return new ResponseEntity<>(HttpStatus.OK);
         }
     }
 
     @GetMapping("/messages/{message_id}")
-    private void getMessageIdHandler(Context ctx) throws JsonProcessingException {
+    private ResponseEntity<?> getMessageIdHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Message retrivedMessage = messageService.getMessageById(Integer.parseInt(ctx.pathParam("message_id")));
         if(retrivedMessage!= null){
             ctx.status(200).json(mapper.writeValueAsString(retrivedMessage));
         }else{
-            ctx.status(200);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
     }
 
@@ -123,13 +132,13 @@ public class SocialMediaController {
     @GetMapping("/messages/{message_id}/messages")
     private void getAccountMessageHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        List<Message> allMessage = messageService.getAllMessagesFromUser(Integer.parseInt(ctx.pathParam("account_id")));
+        List<Message> allMessage = messageService.findAllMessagesFromUser(Integer.parseInt(ctx.pathParam("account_id")));
         if(allMessage!=null){
             ctx.json(mapper.writeValueAsString(allMessage));
         }else{
             ctx.status(200);
         }
     }
-        */
-
+    
+    */
 }
