@@ -35,7 +35,7 @@ public class MessageService
 
     public Message insertMessage(Message message)
     {
-        if(message.getMessageText().length() <= 255 && accountRepository.findById(message.getPostedBy()) != null)
+        if(message.getMessageText().length() <= 255 && message.getMessageText() != null && !message.getMessageText().isEmpty() && messageRepository.existsById(message.getPostedBy()))
         {
             return messageRepository.save(message);
         }
@@ -44,8 +44,8 @@ public class MessageService
 
     public int deleteMessageById(int id)
     {
-        Optional<Message> message = Optional.of(messageRepository.findById(id));
-        if(message.isPresent())
+        Message message = messageRepository.findById(id);
+        if(message != null)
         {
             messageRepository.deleteById(id);
             return 1;
@@ -53,8 +53,12 @@ public class MessageService
         return 0;
     }
 
-    public Integer updateMessage(int id, Message newText)
+    public int updateMessage(int id, Message newText)
     {
+        if(newText.getMessageText().length() > 255 || newText.getMessageText().length() == 0)
+        {
+            return 0;
+        }
         Message message = messageRepository.findById(id);
         if(message != null)
         {

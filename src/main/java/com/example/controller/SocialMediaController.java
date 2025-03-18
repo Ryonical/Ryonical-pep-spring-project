@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +24,7 @@ import com.example.service.MessageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller using Spring. The endpoints you will need can be
@@ -80,9 +81,9 @@ public class SocialMediaController {
     {
         Message addedMessage = messageService.insertMessage(message);
         if(addedMessage != null){
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(addedMessage, HttpStatus.OK);
         }else{
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -90,12 +91,12 @@ public class SocialMediaController {
     @GetMapping("/messages")
     private ResponseEntity<?> getAllMessageHandler()
     {
-        ResponseEntity<ArrayList<Message>> allMessage = new ResponseEntity(messageService.findAllMessages(), HttpStatus.OK);
+        ResponseEntity<List<Message>> allMessage = new ResponseEntity(messageService.findAllMessages(), HttpStatus.OK);
         return allMessage;
     }
 
     @GetMapping("/messages/{message_id}")
-    private ResponseEntity<?> getMessageIdHandler(@RequestParam("message_id") int id)
+    private ResponseEntity<?> getMessageIdHandler(@PathVariable("message_id") int id)
     {
         Message retrivedMessage = messageService.findMessageById(id);
         if(retrivedMessage!= null){
@@ -106,9 +107,9 @@ public class SocialMediaController {
     }
 
     @DeleteMapping("/messages/{message_id}")
-    private ResponseEntity<?> deleteMessageIdHandler(@RequestParam("message_id") int id)
+    private ResponseEntity<?> deleteMessageIdHandler(@PathVariable("message_id") int id)
     {
-        Integer numRows = messageService.deleteMessageById(id);
+        int numRows = messageService.deleteMessageById(id);
         if(numRows != 0){
             return new ResponseEntity<>(numRows, HttpStatus.OK);
         }else{
@@ -117,9 +118,9 @@ public class SocialMediaController {
     }
 
     @PatchMapping("/messages/{message_id}")
-    private ResponseEntity<?> patchMessageIdHandler(@RequestBody Message message, @RequestParam("message_id") int id)
+    private ResponseEntity<?> patchMessageIdHandler(@RequestBody Message message, @PathVariable("message_id") int id)
     {
-        Integer numRows = messageService.updateMessage(id, message);
+        int numRows = messageService.updateMessage(id, message);
         if(numRows != 0){
             return new ResponseEntity<>(numRows, HttpStatus.OK);
         }else{
@@ -128,10 +129,9 @@ public class SocialMediaController {
     }
 
     @GetMapping("/messages/{user_id}/messages")
-    private ResponseEntity<?> getAccountMessageHandler(@RequestParam("user_id") int id)
+    private List<Message> getAccountMessageHandler(@PathVariable("user_id") int id)
     {
-        ResponseEntity<ArrayList<Message>> allMessage = new ResponseEntity(messageService.findAllMessagesByUser(id), HttpStatus.OK);
-        return allMessage;
+        return messageService.findAllMessagesByUser(id);
     }
     
     
