@@ -26,12 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
-/**
- * TODO: You will need to write your own endpoints and handlers for your controller using Spring. The endpoints you will need can be
- * found in readme.md as well as the test cases. You be required to use the @GET/POST/PUT/DELETE/etc Mapping annotations
- * where applicable as well as the @ResponseBody and @PathVariable annotations. You should
- * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
- */
+
 
  @Controller
  @ComponentScan(basePackages = "com.example")
@@ -128,10 +123,10 @@ public class SocialMediaController {
         }
     }
 
-    @GetMapping("/messages/{user_id}/messages")
-    private List<Message> getAccountMessageHandler(@PathVariable("user_id") int id)
+    @GetMapping("/accounts/{accountId}/messages")
+    private ResponseEntity<?> getAccountMessageHandler(@PathVariable("accountId") int id)
     {
-        return messageService.findAllMessagesByUser(id);
+        return new ResponseEntity(messageService.findAllMessagesByUser(id), HttpStatus.OK);
     }
     
     
