@@ -21,11 +21,10 @@ public interface MessageRepository extends JpaRepository<Message, Integer>
 
     public List<Message> findAll();
     public Message findById(int id);
-    public Message deleteById(int id);
     @Modifying
     @Transactional
     @Query("UPDATE Message m SET m.messageText = :messageText WHERE m.messageId = :id")
-    public void updateMessage(@Param("id") int id, @Param("messageText") String messageText);
+    public Integer updateMessage(@Param("id") int id, @Param("messageText") String messageText);
     public List<Message> findByPostedBy(int userId);
 
 

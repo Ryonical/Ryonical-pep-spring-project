@@ -6,19 +6,24 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.entity.Account;
-//import com.example.entity.Message;
+import com.example.entity.Message;
 import com.example.service.AccountService;
 import com.example.service.MessageService;
-//import com.example.service.MessageService;
+import com.example.service.MessageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.ArrayList;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller using Spring. The endpoints you will need can be
@@ -85,60 +90,48 @@ public class SocialMediaController {
     @GetMapping("/messages")
     private ResponseEntity<?> getAllMessageHandler()
     {
-        ResponseEntity<List<Message>> allMessage = new ResponseEntity<>(messageService.findAllMessages(), HttpStatus.OK);
-        if(allMessage != null)
-        {
-            return allMessage;
-        }
-        else
-        {
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
+        ResponseEntity<ArrayList<Message>> allMessage = new ResponseEntity(messageService.findAllMessages(), HttpStatus.OK);
+        return allMessage;
     }
 
     @GetMapping("/messages/{message_id}")
-    private ResponseEntity<?> getMessageIdHandler(Context ctx) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        Message retrivedMessage = messageService.getMessageById(Integer.parseInt(ctx.pathParam("message_id")));
+    private ResponseEntity<?> getMessageIdHandler(@RequestParam("message_id") int id)
+    {
+        Message retrivedMessage = messageService.findMessageById(id);
         if(retrivedMessage!= null){
-            ctx.status(200).json(mapper.writeValueAsString(retrivedMessage));
+            return new ResponseEntity<>(retrivedMessage, HttpStatus.OK);
         }else{
             return new ResponseEntity<>(HttpStatus.OK);
         }
     }
 
     @DeleteMapping("/messages/{message_id}")
-    private void deleteMessageIdHandler(Context ctx) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        Message deletedMessage = messageService.deleteMessageById(Integer.parseInt(ctx.pathParam("message_id")));
-        if(deletedMessage != null){
-            ctx.json(mapper.writeValueAsString(deletedMessage));
+    private ResponseEntity<?> deleteMessageIdHandler(@RequestParam("message_id") int id)
+    {
+        Integer numRows = messageService.deleteMessageById(id);
+        if(numRows != 0){
+            return new ResponseEntity<>(numRows, HttpStatus.OK);
         }else{
-            ctx.status(200);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
     }
 
     @PatchMapping("/messages/{message_id}")
-    private void patchMessageIdHandler(Context ctx) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        Message message = mapper.readValue(ctx.body(), Message.class);
-        Message changedMessage = messageService.updateMessageById(Integer.parseInt(ctx.pathParam("message_id")), message);
-        if(changedMessage != null){
-            ctx.json(mapper.writeValueAsString(changedMessage));
+    private ResponseEntity<?> patchMessageIdHandler(@RequestBody Message message, @RequestParam("message_id") int id)
+    {
+        Integer numRows = messageService.updateMessage(id, message);
+        if(numRows != 0){
+            return new ResponseEntity<>(numRows, HttpStatus.OK);
         }else{
-            ctx.status(400);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    @GetMapping("/messages/{message_id}/messages")
-    private void getAccountMessageHandler(Context ctx) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        List<Message> allMessage = messageService.findAllMessagesFromUser(Integer.parseInt(ctx.pathParam("account_id")));
-        if(allMessage!=null){
-            ctx.json(mapper.writeValueAsString(allMessage));
-        }else{
-            ctx.status(200);
-        }
+    @GetMapping("/messages/{user_id}/messages")
+    private ResponseEntity<?> getAccountMessageHandler(@RequestParam("user_id") int id)
+    {
+        ResponseEntity<ArrayList<Message>> allMessage = new ResponseEntity(messageService.findAllMessagesByUser(id), HttpStatus.OK);
+        return allMessage;
     }
     
     
